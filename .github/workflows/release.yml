@@ -1,0 +1,39 @@
+name: Release
+
+# Publishes both packages to npm when a version tag (e.g. v1.0.0) is pushed.
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+  id-token: write # npm provenance / trusted publishing
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+          cache: npm
+      - name: Check tag matches package versions
+        run: |
+          for p in packages/server packages/react; do
+            VERSION="v$(node -p "require('./$p/package.json').version")"
+            if [ "$VERSION" != "$GITHUB_REF_NAME" ]; then
+              echo "Tag $GITHUB_REF_NAME does not match $p version $VERSION"; exit 1
+            fi
+          done
+      - name: Use npm 11 (required for trusted publishing)
+        run: npm install -g npm@11
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run build
+      - run: npm test
+      # Uses npm Trusted Publishing (OIDC) when configured; otherwise falls back to the NPM_TOKEN secret.
+      - run: npm publish --workspaces --provenance --access public --ignore-scripts
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

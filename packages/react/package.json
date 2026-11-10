@@ -1,0 +1,27 @@
+{
+  "name": "react-rtsp-player",
+  "version": "1.0.0",
+  "description": "Play RTSP IP cameras in React with one line: <RtspPlayer url=\"rtsp://...\" />. Low latency, H.264/H.265, auto-reconnect. Works with rtsp-player-server.",
+  "keywords": ["react", "rtsp", "player", "ip camera", "cctv", "video", "live", "stream", "mse", "websocket", "typescript"],
+  "license": "MIT",
+  "author": "FeruzDev",
+  "repository": { "type": "git", "url": "git+https://github.com/FeruzDev/rtsp-player.git", "directory": "packages/react" },
+  "homepage": "https://github.com/FeruzDev/rtsp-player#readme",
+  "bugs": { "url": "https://github.com/FeruzDev/rtsp-player/issues" },
+  "sideEffects": false,
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": { "types": "./dist/index.d.ts", "default": "./dist/index.js" },
+      "require": { "types": "./dist/index.d.cts", "default": "./dist/index.cjs" }
+    },
+    "./package.json": "./package.json"
+  },
+  "files": ["dist", "README.md", "LICENSE"],
+  "scripts": { "build": "tsup" },
+  "peerDependencies": { "react": ">=16.8.0" },
+  "publishConfig": { "access": "public" }
+}
